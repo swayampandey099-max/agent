@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Voice Mail AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <button id="themeToggle" class="theme-btn">
+            🌙 Toggle Theme
+        </button>
+
+        <h1>AI Voice Mail</h1>
+        <p class="subtitle">
+            Smart futuristic voice email system
+        </p>
+
+        <form id="emailForm" enctype="multipart/form-data">
+
+            <input
+                type="email"
+                name="recipient"
+                placeholder="Recipient Email"
+                required
+            >
+
+            <input
+                type="text"
+                name="subject"
+                placeholder="Subject"
+                required
+            >
+
+            <textarea
+                name="message"
+                placeholder="Write your message"
+                required
+            ></textarea>
+
+            <input type="file" name="file">
+
+            <div class="buttons">
+                <button type="button" id="voiceBtn">
+                    🎤 Voice
+                </button>
+
+                <button type="submit">
+                    🚀 Send
+                </button>
+            </div>
+
+        </form>
+
+        <div id="status"></div>
+
+    </div>
+
+</div>
+
+<script>
+
+const form = document.getElementById('emailForm')
+const statusDiv = document.getElementById('status')
+const themeToggle = document.getElementById('themeToggle')
+
+// Theme Toggle
+
+themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('light-theme')
+})
+
+// Send Email
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault()
+
+    statusDiv.innerHTML = 'Sending 🚀'
+    statusDiv.className = 'loading'
+
+    const formData = new FormData(form)
+
+    const response = await fetch('/send-email', {
+        method: 'POST',
+        body: formData
+    })
+
+    const data = await response.json()
+
+    if (data.status === 'success') {
+        statusDiv.innerHTML = data.message
+        statusDiv.className = 'success'
+    }
+    else {
+        statusDiv.innerHTML = data.message
+        statusDiv.className = 'error'
+    }
+})
+
+// Voice Input
+
+document.getElementById('voiceBtn').addEventListener('click', async () => {
+
+    statusDiv.innerHTML = 'Listening 🎤'
+    statusDiv.className = 'loading'
+
+    const response = await fetch('/voice-input')
+
+    const data = await response.json()
+
+    document.querySelector('textarea').value = data.text
+
+    statusDiv.innerHTML = 'Voice Captured ✅'
+    statusDiv.className = 'success'
+})
+
+</script>
+
+</body>
+</html>
