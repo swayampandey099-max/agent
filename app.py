@@ -11,8 +11,6 @@ load_dotenv()
 
 app = Flask(__name__)
 
-engine = pyttsx3.init()
-
 SENDER_EMAIL = os.getenv("EMAIL")
 APP_PASSWORD = os.getenv("APP_PASSWORD")
 
