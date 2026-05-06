@@ -4,8 +4,6 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
-import speech_recognition as sr
-import pyttsx3
 from dotenv import load_dotenv
 import os
 
@@ -18,32 +16,9 @@ engine = pyttsx3.init()
 SENDER_EMAIL = os.getenv("EMAIL")
 APP_PASSWORD = os.getenv("APP_PASSWORD")
 
-
-def speak(text):
-    engine.say(text)
-    engine.runAndWait()
-
-
 @app.route('/')
 def home():
     return render_template('index.html')
-
-
-@app.route('/voice-input', methods=['GET'])
-def voice_input():
-    recognizer = sr.Recognizer()
-
-    with sr.Microphone() as source:
-        speak('Listening')
-        audio = recognizer.listen(source)
-
-    try:
-        text = recognizer.recognize_google(audio)
-        return jsonify({'text': text})
-
-    except:
-        return jsonify({'text': 'Could not recognize voice'})
-
 
 @app.route('/send-email', methods=['POST'])
 def send_email():
